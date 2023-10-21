@@ -2,17 +2,17 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - uses: syedstartup20/heroku-deploy@v3.12.12
         with:
-          branch: "main"
+          branch: "master"
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "node-heroku-jmm-testing"
+          heroku_app_name: "node-heroku"
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           # HEROKU_API_KEY and HEROKU_EMAIL will need to be set in repository secrets

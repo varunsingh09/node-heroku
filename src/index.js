@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
 const mySetting = process.env.MY_SETTING;
-const version = 'v1.1'
+const version = process.env.VERSION || 'v1.1'
 
 // setup express
 const app = express();
@@ -26,14 +26,14 @@ app.get('/api/albums', (req, res) => {
 app.get('/api/albums/:id', (req, res) => {
     const id = req.params.id;
     const album = albums.find(a => a.id === id);
-    if(!album){
+    if (!album) {
         return res.sendStatus(404);
     }
     return res.send(album);
 });
 
 app.post('/api/albums', (req, res) => {
-    const {title, artist} = req.body;
+    const { title, artist } = req.body;
 
     // validate required fields
     if (!title || typeof title !== 'string') return res.status(400).send('Invalid required field: title (string)');

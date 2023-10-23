@@ -10,8 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       #- uses: akhileshns/heroku-deploy@v3.12.12
-        env:
-          GITHUB_VERSION: ${{ secrets.VERSION }}
         with:
           branch: "master"
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -20,3 +18,8 @@ jobs:
           VERSION: GitHub Actions Shell
        
           # HEROKU_API_KEY and HEROKU_EMAIL will need to be set in repository secrets
+  github-actions-environment-variables-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List of the GitHub Actions environment variables on Ubuntu
+        run: env

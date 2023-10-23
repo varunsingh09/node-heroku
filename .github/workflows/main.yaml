@@ -15,11 +15,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "node-heroku"
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          VERSION: GitHub Actions Shell
+          INPUT_ENV_VERSION: GitHub Actions Shell
        
           # HEROKU_API_KEY and HEROKU_EMAIL will need to be set in repository secrets
-  github-actions-environment-variables-ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-      - name: List of the GitHub Actions environment variables on Ubuntu
-        run: env
+  

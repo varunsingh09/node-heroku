@@ -35,8 +35,8 @@ const client = await createClient({
 
 
 
-await client.set('key', 'value');
-const value = await client.get('key');
+await client.set('food-app', 'this is next gen food app');
+const value = await client.get('food-app');
 console.log("Get Data from redis", value);
 await client.disconnect();
 

@@ -1,6 +1,6 @@
 import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from 'uuid'
+import { createClient } from 'redis';
 // get environment variables
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
@@ -17,6 +17,29 @@ let albums = [{
     title: "All the Right Reasons",
     artist: "Nickelback"
 }];
+
+const client = await createClient({
+    password: 'Dnk2x4l0MWy569V4DneMJ7KBZO1TFi9Y',
+    socket: {
+        host: 'redis-15259.c80.us-east-1-2.ec2.cloud.redislabs.com',
+        port: 15259
+    }
+})
+    .on('error', err => console.log('Redis Client Error', err))
+    .on("ready", function () {
+
+        console.log("Connected to Redis server successfully");
+    })
+    .connect()
+
+
+
+
+await client.set('key', 'value');
+const value = await client.get('key');
+console.log("Get Data from redis", value);
+await client.disconnect();
+
 
 // setup routes
 app.get('/api/albums', (req, res) => {
@@ -69,7 +92,8 @@ app.get('/api/healthcheck', (req, res) => {
         status: 'online',
         version,
         nodeEnv,
-        mySetting
+        mySetting,
+        "redis": value
     });
 });
 

@@ -2,22 +2,63 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid'
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
+// import {userConnection,todoConnection} from  "./db.js"
 // get environment variables
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
 const mySetting = process.env.MY_SETTING;
 const version = process.env.VERSION || 'v1.2'
 
+function makeNewConnection(uri) {
+    const db = mongoose.createConnection(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    db.on('error', function (error) {
+        console.log(`MongoDB :: connection ${this.name} ${JSON.stringify(error)}`);
+        db.close().catch(() => console.log(`MongoDB :: failed to close connection ${this.name}`));
+    });
+
+    db.on('connected', function () {
+        mongoose.set('debug', function (col, method, query, doc) {
+            console.log(`MongoDB :: ${this.conn.name} ${col}.${method}(${JSON.stringify(query)},${JSON.stringify(doc)})`);
+        });
+        console.log(`MongoDB :: connected ${this.name}`);
+    });
+
+    db.on('disconnected', function () {
+        console.log(`MongoDB :: disconnected ${this.name}`);
+    });
+
+    return db;
+}
+
+const userConnection = makeNewConnection('mongodb+srv://syedikram:syed12345@startupfoodapp.w2pio.mongodb.net/Development-Data?retryWrites=true&w=majority');
+const todoConnection = makeNewConnection('mongodb+srv://syedikram:1234567890@cluster0.cbdu3.mongodb.net/Production_seconddatabase?retryWrites=true&w=majority');
+
+
 // setup express
 const app = express();
 app.use(express.json());
-mongoose.connect('mongodb+srv://syedikram:syed12345@startupfoodapp.w2pio.mongodb.net/Development-Data?retryWrites=true&w=majority')
-    .then(() => {
-        console.log("Successfully connected to MongoDB.");
-    }).catch(err => {
-        console.log('Could not connect to MongoDB.');
-        process.exit();
-    });
+
+
+
+// mongoose.connect('mongodb+srv://syedikram:syed12345@startupfoodapp.w2pio.mongodb.net/Development-Data?retryWrites=true&w=majority')
+//     .then(() => {
+//         console.log("First db Successfully connected to MongoDB.");
+//     }).catch(err => {
+//         console.log('First db Could not connect to MongoDB.');
+//         process.exit();
+//     });
+
+// mongoose.connect('mongodb+srv://syedikram:1234567890@cluster0.cbdu3.mongodb.net/Production_seconddatabase?retryWrites=true&w=majority')
+//     .then(() => {
+//         console.log("Second db Successfully connected to MongoDB.");
+//     }).catch(err => {
+//         console.log('Second db Could not connect to MongoDB.');
+//         process.exit();
+//     });
 
 // save albums in memory
 let albums = [{
@@ -25,6 +66,7 @@ let albums = [{
     title: "All the Right Reasons",
     artist: "Nickelback"
 }];
+
 
 const client = await createClient({
     password: 'GvQo60GnJpMfLXAxQXUbM3PYIwus3w8f',

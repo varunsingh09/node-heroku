@@ -1,7 +1,7 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid'
 import mongoose from 'mongoose';
-// import { createClient } from 'redis';
+import { createClient } from 'redis';
 // get environment variables
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
@@ -26,28 +26,25 @@ let albums = [{
     artist: "Nickelback"
 }];
 
-// const client = await createClient({
-//     password: 'Dnk2x4l0MWy569V4DneMJ7KBZO1TFi9Y',
-//     socket: {
-//         host: 'redis-15259.c80.us-east-1-2.ec2.cloud.redislabs.com',
-//         port: 15259
-//     }
-// })
-//     .on('error', err => console.log('Redis Client Error', err))
-//     .on("ready", function () {
+const client = await createClient({
+    password: 'GvQo60GnJpMfLXAxQXUbM3PYIwus3w8f',
+    socket: {
+        host: 'redis-19172.c275.us-east-1-4.ec2.cloud.redislabs.com',
+        port: 19172
+    }
+})
+    .on('error', err => console.log('Redis Client Error', err))
+    .on("ready", function () {
 
-//         console.log("Connected to Redis server successfully");
-//     })
-//     .connect()
-
-
+        console.log("Connected to Redis server successfully");
+    })
+    .connect()
 
 
-// await client.set('food-app', 'this is next gen food app');
-// const value = await client.get('food-app');
-// console.log("Get Data from redis", value);
-// await client.disconnect();
-
+await client.set('food-app', 'this is next gen food app');
+const value = await client.get('food-app');
+console.log("Get Data from redis", value);
+await client.disconnect();
 
 // setup routes
 app.get('/api/albums', (req, res) => {

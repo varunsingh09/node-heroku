@@ -1,6 +1,7 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid'
-import { createClient } from 'redis';
+import mongoose from 'mongoose';
+// import { createClient } from 'redis';
 // get environment variables
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
@@ -10,6 +11,13 @@ const version = process.env.VERSION || 'v1.2'
 // setup express
 const app = express();
 app.use(express.json());
+mongoose.connect('mongodb+srv://syedikram:syed12345@startupfoodapp.w2pio.mongodb.net/Development-Data?retryWrites=true&w=majority')
+    .then(() => {
+        console.log("Successfully connected to MongoDB.");
+    }).catch(err => {
+        console.log('Could not connect to MongoDB.');
+        process.exit();
+    });
 
 // save albums in memory
 let albums = [{
@@ -18,27 +26,27 @@ let albums = [{
     artist: "Nickelback"
 }];
 
-const client = await createClient({
-    password: 'Dnk2x4l0MWy569V4DneMJ7KBZO1TFi9Y',
-    socket: {
-        host: 'redis-15259.c80.us-east-1-2.ec2.cloud.redislabs.com',
-        port: 15259
-    }
-})
-    .on('error', err => console.log('Redis Client Error', err))
-    .on("ready", function () {
+// const client = await createClient({
+//     password: 'Dnk2x4l0MWy569V4DneMJ7KBZO1TFi9Y',
+//     socket: {
+//         host: 'redis-15259.c80.us-east-1-2.ec2.cloud.redislabs.com',
+//         port: 15259
+//     }
+// })
+//     .on('error', err => console.log('Redis Client Error', err))
+//     .on("ready", function () {
 
-        console.log("Connected to Redis server successfully");
-    })
-    .connect()
-
-
+//         console.log("Connected to Redis server successfully");
+//     })
+//     .connect()
 
 
-await client.set('food-app', 'this is next gen food app');
-const value = await client.get('food-app');
-console.log("Get Data from redis", value);
-await client.disconnect();
+
+
+// await client.set('food-app', 'this is next gen food app');
+// const value = await client.get('food-app');
+// console.log("Get Data from redis", value);
+// await client.disconnect();
 
 
 // setup routes
@@ -93,7 +101,7 @@ app.get('/api/healthcheck', (req, res) => {
         version,
         nodeEnv,
         mySetting,
-        "redis": value
+        "redis": value || 'om'
     });
 });
 
